@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Fundamentals Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161921;
+    --card: #1e2330;
+    --border: #2a3040;
+    --accent: #00e5a0;
+    --accent2: #7c6dfa;
+    --warn: #ff6b6b;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --code-bg: #111520;
+    --easy: #00e5a0;
+    --medium: #f59e0b;
+    --hard: #ef4444;
+  }
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘Syne’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+background: var(–surface);
+border-bottom: 1px solid var(–border);
+padding: 16px 32px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+position: sticky;
+top: 0;
+z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo {
+font-size: 20px;
+font-weight: 800;
+color: var(–accent);
+letter-spacing: -0.5px;
+}
+.logo span { color: var(–text); }
+.badge {
+background: var(–accent2);
+color: white;
+font-size: 11px;
+font-weight: 700;
+padding: 3px 10px;
+border-radius: 100px;
+letter-spacing: 0.5px;
+}
+.timer-wrap {
+display: flex;
+align-items: center;
+gap: 10px;
+background: var(–card);
+border: 1px solid var(–border);
+padding: 8px 18px;
+border-radius: 12px;
+}
+.timer-icon { font-size: 18px; }
+#timer {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 22px;
+font-weight: 700;
+color: var(–accent);
+letter-spacing: 2px;
+min-width: 80px;
+transition: color 0.3s;
+}
+#timer.urgent { color: var(–warn); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* ── PROGRESS ── */
+.progress-bar-wrap {
+height: 4px;
+background: var(–border);
+width: 100%;
+}
+.progress-bar-fill {
+height: 4px;
+background: linear-gradient(90deg, var(–accent2), var(–accent));
+width: 0%;
+transition: width 0.5s ease;
+}
+
+/* ── MAIN ── */
+main {
+max-width: 900px;
+margin: 0 auto;
+padding: 32px 24px 80px;
+}
+
+/* ── INTRO SCREEN ── */
+.intro {
+text-align: center;
+padding: 60px 20px;
+}
+.intro-title {
+font-size: 52px;
+font-weight: 800;
+line-height: 1.1;
+margin-bottom: 16px;
+}
+.intro-title span { color: var(–accent); }
+.intro-sub {
+color: var(–muted);
+font-size: 18px;
+max-width: 560px;
+margin: 0 auto 40px;
+line-height: 1.6;
+}
+.intro-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 16px;
+max-width: 600px;
+margin: 0 auto 40px;
+}
+.intro-stat {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 20px;
+}
+.intro-stat .num {
+font-size: 32px;
+font-weight: 800;
+color: var(–accent);
+display: block;
+}
+.intro-stat .lbl {
+font-size: 13px;
+color: var(–muted);
+margin-top: 4px;
+}
+.topic-chips {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+justify-content: center;
+margin-bottom: 40px;
+}
+.chip {
+background: var(–card);
+border: 1px solid var(–border);
+padding: 6px 16px;
+border-radius: 100px;
+font-size: 13px;
+font-family: ‘JetBrains Mono’, monospace;
+color: var(–accent2);
+}
+.btn-start {
+background: var(–accent);
+color: var(–bg);
+border: none;
+padding: 16px 48px;
+font-size: 18px;
+font-weight: 800;
+font-family: ‘Syne’, sans-serif;
+border-radius: 12px;
+cursor: pointer;
+transition: transform 0.15s, box-shadow 0.15s;
+letter-spacing: 0.5px;
+}
+.btn-start:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 32px rgba(0,229,160,0.35);
+}
+
+/* ── QUIZ SCREEN ── */
+.quiz-screen { display: none; }
+
+.q-meta {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 24px;
+}
+.q-counter {
+font-size: 14px;
+color: var(–muted);
+}
+.q-counter strong { color: var(–text); font-size: 18px; }
+.difficulty-badge {
+padding: 4px 14px;
+border-radius: 100px;
+font-size: 12px;
+font-weight: 700;
+letter-spacing: 0.5px;
+}
+.diff-easy { background: rgba(0,229,160,0.15); color: var(–easy); border: 1px solid rgba(0,229,160,0.3); }
+.diff-medium { background: rgba(245,158,11,0.15); color: var(–medium); border: 1px solid rgba(245,158,11,0.3); }
+.diff-hard { background: rgba(239,68,68,0.15); color: var(–hard); border: 1px solid rgba(239,68,68,0.3); }
+
+.topic-tag {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 12px;
+color: var(–accent2);
+background: rgba(124,109,250,0.12);
+border: 1px solid rgba(124,109,250,0.25);
+padding: 4px 12px;
+border-radius: 100px;
+}
+
+.question-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 20px;
+padding: 32px;
+margin-bottom: 24px;
+animation: slideIn 0.3s ease;
+}
+@keyframes slideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+.q-text {
+font-size: 18px;
+font-weight: 700;
+line-height: 1.5;
+margin-bottom: 20px;
+}
+
+.context-box {
+background: var(–code-bg);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 16px 20px;
+margin-bottom: 20px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 13.5px;
+line-height: 1.7;
+color: #c9d1d9;
+}
+.context-box .kw { color: #ff7b72; }
+.context-box .fn { color: #d2a8ff; }
+.context-box .st { color: #a5d6ff; }
+.context-box .cm { color: #8b949e; font-style: italic; }
+.context-box .nb { color: #79c0ff; }
+.context-box .op { color: #ff7b72; }
+
+.expected-output {
+background: rgba(0,229,160,0.05);
+border: 1px solid rgba(0,229,160,0.2);
+border-radius: 10px;
+padding: 12px 16px;
+margin-bottom: 20px;
+font-size: 13px;
+color: var(–muted);
+}
+.expected-output strong { color: var(–accent); }
+
+/* ── ANSWER AREA ── */
+.answer-section label {
+font-size: 13px;
+color: var(–muted);
+display: block;
+margin-bottom: 8px;
+letter-spacing: 0.5px;
+}
+
+/* MCQ options */
+.options-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
+}
+.option-btn {
+background: var(–surface);
+border: 2px solid var(–border);
+border-radius: 12px;
+padding: 14px 18px;
+text-align: left;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 13px;
+color: var(–text);
+cursor: pointer;
+transition: all 0.15s;
+line-height: 1.6;
+}
+.option-btn:hover:not(:disabled) {
+border-color: var(–accent2);
+background: rgba(124,109,250,0.08);
+}
+.option-btn.selected {
+border-color: var(–accent2);
+background: rgba(124,109,250,0.15);
+color: white;
+}
+.option-btn.correct {
+border-color: var(–accent);
+background: rgba(0,229,160,0.12);
+color: var(–accent);
+}
+.option-btn.wrong {
+border-color: var(–warn);
+background: rgba(255,107,107,0.1);
+color: var(–warn);
+}
+
+/* Code textarea */
+.code-answer {
+width: 100%;
+background: var(–code-bg);
+border: 2px solid var(–border);
+border-radius: 12px;
+padding: 16px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 14px;
+color: #c9d1d9;
+resize: vertical;
+min-height: 140px;
+outline: none;
+transition: border-color 0.2s;
+line-height: 1.7;
+}
+.code-answer:focus { border-color: var(–accent2); }
+
+/* Fill-in text */
+.fill-answer {
+width: 100%;
+background: var(–code-bg);
+border: 2px solid var(–border);
+border-radius: 12px;
+padding: 14px 18px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 15px;
+color: var(–text);
+outline: none;
+transition: border-color 0.2s;
+}
+.fill-answer:focus { border-color: var(–accent2); }
+
+/* ── FEEDBACK ── */
+.feedback-box {
+border-radius: 12px;
+padding: 16px 20px;
+margin-top: 16px;
+font-size: 14px;
+line-height: 1.6;
+display: none;
+}
+.feedback-box.show { display: block; animation: slideIn 0.2s ease; }
+.feedback-box.correct-fb {
+background: rgba(0,229,160,0.08);
+border: 1px solid rgba(0,229,160,0.3);
+color: var(–accent);
+}
+.feedback-box.wrong-fb {
+background: rgba(255,107,107,0.08);
+border: 1px solid rgba(255,107,107,0.3);
+color: #ff9999;
+}
+.feedback-box .explanation {
+color: var(–muted);
+margin-top: 6px;
+font-size: 13px;
+}
+.feedback-box .explanation code {
+font-family: ‘JetBrains Mono’, monospace;
+color: var(–accent2);
+background: rgba(124,109,250,0.1);
+padding: 1px 6px;
+border-radius: 4px;
+}
+
+/* ── BUTTONS ── */
+.btn-row {
+display: flex;
+gap: 12px;
+margin-top: 24px;
+justify-content: flex-end;
+}
+.btn {
+padding: 12px 28px;
+border-radius: 10px;
+font-family: ‘Syne’, sans-serif;
+font-size: 15px;
+font-weight: 700;
+cursor: pointer;
+border: none;
+transition: all 0.15s;
+}
+.btn-check {
+background: var(–accent2);
+color: white;
+}
+.btn-check:hover { background: #9585ff; transform: translateY(-1px); }
+.btn-next {
+background: var(–accent);
+color: var(–bg);
+display: none;
+}
+.btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,229,160,0.3); }
+.btn-skip {
+background: transparent;
+color: var(–muted);
+border: 1px solid var(–border);
+}
+.btn-skip:hover { color: var(–text); border-color: var(–muted); }
+
+/* ── RESULTS SCREEN ── */
+.results-screen {
+display: none;
+text-align: center;
+padding: 40px 20px;
+animation: slideIn 0.4s ease;
+}
+.score-circle {
+width: 160px;
+height: 160px;
+border-radius: 50%;
+background: conic-gradient(var(–accent) 0%, var(–accent) var(–pct), var(–border) var(–pct));
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 32px;
+position: relative;
+}
+.score-circle::before {
+content: ‘’;
+position: absolute;
+width: 130px;
+height: 130px;
+border-radius: 50%;
+background: var(–bg);
+}
+.score-inner {
+position: relative;
+z-index: 1;
+text-align: center;
+}
+.score-pct {
+font-size: 38px;
+font-weight: 800;
+color: var(–accent);
+display: block;
+line-height: 1;
+}
+.score-label { font-size: 12px; color: var(–muted); margin-top: 4px; }
+.result-title {
+font-size: 36px;
+font-weight: 800;
+margin-bottom: 10px;
+}
+.result-sub { color: var(–muted); font-size: 16px; margin-bottom: 40px; }
+
+.results-breakdown {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 16px;
+max-width: 500px;
+margin: 0 auto 40px;
+}
+.rb-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 14px;
+padding: 20px;
+}
+.rb-card .rb-num {
+font-size: 28px;
+font-weight: 800;
+display: block;
+}
+.rb-card .rb-lbl { font-size: 12px; color: var(–muted); margin-top: 4px; }
+.correct-color { color: var(–easy); }
+.wrong-color { color: var(–warn); }
+.skip-color { color: var(–muted); }
+
+.review-section {
+max-width: 700px;
+margin: 0 auto 40px;
+text-align: left;
+}
+.review-title {
+font-size: 20px;
+font-weight: 700;
+margin-bottom: 16px;
+padding-bottom: 12px;
+border-bottom: 1px solid var(–border);
+}
+.review-item {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 14px;
+padding: 20px;
+margin-bottom: 12px;
+}
+.review-item.r-correct { border-left: 3px solid var(–accent); }
+.review-item.r-wrong { border-left: 3px solid var(–warn); }
+.review-item.r-skip { border-left: 3px solid var(–muted); }
+.review-q { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.review-ans { font-size: 13px; color: var(–muted); font-family: ‘JetBrains Mono’, monospace; }
+.review-ans .your-ans { color: var(–warn); }
+.review-ans .right-ans { color: var(–accent); }
+
+.btn-restart {
+background: var(–accent2);
+color: white;
+padding: 14px 40px;
+border-radius: 12px;
+font-size: 17px;
+font-weight: 800;
+font-family: ‘Syne’, sans-serif;
+border: none;
+cursor: pointer;
+transition: all 0.15s;
+}
+.btn-restart:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,109,250,0.4); }
+
+@media(max-width:600px) {
+.options-grid { grid-template-columns: 1fr; }
+.intro-grid, .results-breakdown { grid-template-columns: 1fr 1fr; }
+.intro-title { font-size: 34px; }
+}
+</style>
+
+</head>
+<body>
+
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo">py<span>quiz</span></div>
+    <div class="badge">FUNDAMENTALS</div>
+  </div>
+  <div class="timer-wrap">
+    <span class="timer-icon">⏱</span>
+    <div id="timer">60:00</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- INTRO -->
+
+  <div class="intro" id="introScreen">
+    <h1 class="intro-title">Python<br><span>Foundations Quiz</span></h1>
+    <p class="intro-sub">Test your understanding of Python's core control structures through practical coding problems.</p>
+    <div class="intro-grid">
+      <div class="intro-stat"><span class="num">10</span><div class="lbl">Questions</div></div>
+      <div class="intro-stat"><span class="num">60</span><div class="lbl">Minutes</div></div>
+      <div class="intro-stat"><span class="num">3</span><div class="lbl">Difficulty Levels</div></div>
+    </div>
+    <div class="topic-chips">
+      <span class="chip">if / elif / else</span>
+      <span class="chip">for loops</span>
+      <span class="chip">while loops</span>
+      <span class="chip">nested loops</span>
+      <span class="chip">loop control</span>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">Start Quiz →</button>
+  </div>
+
+  <!-- QUIZ -->
+
+  <div class="quiz-screen" id="quizScreen">
+    <div class="q-meta">
+      <div class="q-counter">Question <strong id="qNum">1</strong> of <strong>10</strong></div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="topic-tag" id="topicTag"></span>
+        <span class="difficulty-badge" id="diffBadge"></span>
+      </div>
+    </div>
+    <div class="question-card" id="questionCard">
+      <div class="q-text" id="qText"></div>
+      <div class="context-box" id="contextBox" style="display:none"></div>
+      <div class="expected-output" id="expectedOut" style="display:none"></div>
+      <div class="answer-section" id="answerSection"></div>
+      <div class="feedback-box" id="feedbackBox"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-skip" id="btnSkip" onclick="skipQuestion()">Skip</button>
+      <button class="btn btn-check" id="btnCheck" onclick="checkAnswer()">Check Answer</button>
+      <button class="btn btn-next" id="btnNext" onclick="nextQuestion()">Next →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+
+  <div class="results-screen" id="resultsScreen">
+    <div class="score-circle" id="scoreCircle">
+      <div class="score-inner">
+        <span class="score-pct" id="scorePct">0%</span>
+        <div class="score-label">SCORE</div>
+      </div>
+    </div>
+    <h2 class="result-title" id="resultTitle">Well done!</h2>
+    <p class="result-sub" id="resultSub"></p>
+    <div class="results-breakdown">
+      <div class="rb-card"><span class="rb-num correct-color" id="rbCorrect">0</span><div class="rb-lbl">Correct</div></div>
+      <div class="rb-card"><span class="rb-num wrong-color" id="rbWrong">0</span><div class="rb-lbl">Incorrect</div></div>
+      <div class="rb-card"><span class="rb-num skip-color" id="rbSkip">0</span><div class="rb-lbl">Skipped</div></div>
+    </div>
+    <div class="review-section">
+      <div class="review-title">Question Review</div>
+      <div id="reviewList"></div>
+    </div>
+    <button class="btn-restart" onclick="restartQuiz()">↺ Try Again</button>
+  </div>
+
+</main>
+
+<script>
+const TOTAL_TIME = 60 * 60; // 60 minutes in seconds
+
+const questions = [
+  // ── Q1 EASY ──────────────────────────────────────
+  {
+    id: 1,
+    difficulty: 'easy',
+    topic: 'if / else',
+    text: 'What will the following code print? Read it carefully and choose the correct output.',
+    code: `score = 75\n\n<kw>if</kw> score >= 90:\n    <fn>print</fn>(<st>"Grade: A"</st>)\n<kw>elif</kw> score >= 75:\n    <fn>print</fn>(<st>"Grade: B"</st>)\n<kw>elif</kw> score >= 60:\n    <fn>print</fn>(<st>"Grade: C"</st>)\n<kw>else</kw>:\n    <fn>print</fn>(<st>"Grade: F"</st>)`,
+    type: 'mcq',
+    options: ['Grade: A', 'Grade: B', 'Grade: C', 'Grade: F'],
+    answer: 1,
+    explanation: 'score is 75. The first condition (>=90) is False. The second condition (>=75) is True because 75 >= 75. Python stops at the first True condition, so it prints "Grade: B".'
+  },
+
+  // ── Q2 EASY ──────────────────────────────────────
+  {
+    id: 2,
+    difficulty: 'easy',
+    topic: 'for loop',
+    text: 'What will this code print? There are 5 numbers — but not all of them get printed. What do you see on screen?',
+    code: `numbers = [1, 2, 3, 4, 5]\n\n<kw>for</kw> num <kw>in</kw> numbers:\n    <fn>print</fn>(num)`,
+    expected: '1\n2\n3\n4\n5',
+    type: 'mcq',
+    options: ['1 2 3 4 5  (all on one line)', '1\n2\n3\n4\n5  (each on a new line)', '[1, 2, 3, 4, 5]', 'numbers'],
+    answer: 1,
+    explanation: 'The for loop visits each item in the list one at a time. Each call to print() adds a newline at the end by default, so every number appears on its own line.'
+  },
+
+  // ── Q3 EASY ──────────────────────────────────────
+  {
+    id: 3,
+    difficulty: 'easy',
+    topic: 'while loop',
+    text: 'How many times will "Hello!" be printed by this while loop?',
+    code: `count = 0\n\n<kw>while</kw> count < 4:\n    <fn>print</fn>(<st>"Hello!"</st>)\n    count = count + 1`,
+    type: 'mcq',
+    options: ['3 times', '4 times', '5 times', 'Infinite times (never stops)'],
+    answer: 1,
+    explanation: 'count starts at 0 and increases by 1 each iteration. The loop runs when count is 0, 1, 2, and 3 (four times). When count becomes 4, the condition 4 < 4 is False and the loop ends.'
+  },
+
+  // ── Q4 EASY/MCQ ──────────────────────────────────
+  {
+    id: 4,
+    difficulty: 'easy',
+    topic: 'if / elif / else',
+    text: 'A shop gives discounts based on the total purchase. Which code correctly gives 20% off for purchases over $100, 10% off for over $50, and no discount otherwise?',
+    type: 'mcq',
+    options: [
+      'if total > 50:\n    discount = 0.10\nelif total > 100:\n    discount = 0.20\nelse:\n    discount = 0',
+      'if total > 100:\n    discount = 0.20\nelif total > 50:\n    discount = 0.10\nelse:\n    discount = 0',
+      'if total > 100:\n    discount = 0.10\nif total > 50:\n    discount = 0.20\nelse:\n    discount = 0',
+      'while total > 100:\n    discount = 0.20'
+    ],
+    answer: 1,
+    explanation: 'Option B is correct. You must check the larger threshold first (>100). If you check >50 first, a purchase of $150 would match that condition and never reach the 20% discount check.'
+  },
+
+  // ── Q5 MEDIUM ─────────────────────────────────────
+  {
+    id: 5,
+    difficulty: 'medium',
+    topic: 'for loop',
+    text: 'Complete the code below so it prints the sum of all even numbers from 1 to 10. The expected output is 30. Fill in the blank (replace ??? with the correct condition).',
+    code: `total = 0\n\n<kw>for</kw> num <kw>in</kw> <fn>range</fn>(1, 11):\n    <kw>if</kw> ???:\n        total = total + num\n\n<fn>print</fn>(total)`,
+    expected: '30',
+    type: 'fill',
+    answer: ['num % 2 == 0', 'num%2==0', 'num % 2 == 0', '(num % 2) == 0'],
+    placeholder: 'e.g. num > 5',
+    explanation: 'The condition num % 2 == 0 checks if a number is even. The % operator gives the remainder of division. Even numbers have a remainder of 0 when divided by 2. The even numbers 2+4+6+8+10 = 30.'
+  },
+
+  // ── Q6 MEDIUM ─────────────────────────────────────
+  {
+    id: 6,
+    difficulty: 'medium',
+    topic: 'while loop',
+    text: 'What does this code print? A while loop with a break statement — trace through each step.',
+    code: `x = 10\n\n<kw>while</kw> x > 0:\n    <kw>if</kw> x == 7:\n        <kw>break</kw>\n    <fn>print</fn>(x)\n    x = x - 1`,
+    type: 'mcq',
+    options: [
+      '10\n9\n8\n7  (prints down to 7)',
+      '10\n9\n8  (stops before printing 7)',
+      '7\n6\n5\n4\n3\n2\n1  (starts from 7)',
+      '10\n9\n8\n7\n6\n5\n4\n3\n2\n1  (prints all)'
+    ],
+    answer: 1,
+    explanation: 'x starts at 10. Each iteration: print x, then subtract 1. When x reaches 7, the if condition is True and break exits the loop immediately — before printing 7. So we see 10, 9, 8.'
+  },
+
+  // ── Q7 MEDIUM ─────────────────────────────────────
+  {
+    id: 7,
+    difficulty: 'medium',
+    topic: 'for loop',
+    text: 'Write code that uses a for loop to count how many words in the list are longer than 4 characters. Store the count in a variable called long_words and print it. Expected output: 3',
+    code: `words = [<st>"cat"</st>, <st>"elephant"</st>, <st>"dog"</st>, <st>"python"</st>, <st>"hi"</st>, <st>"laptop"</st>]`,
+    expected: '3',
+    type: 'code',
+    keywords: ['for', 'if', 'len', 'long_words', 'print'],
+    answer: `long_words = 0\nfor word in words:\n    if len(word) > 4:\n        long_words = long_words + 1\nprint(long_words)`,
+    explanation: 'You need a counter variable (long_words = 0), a for loop to visit each word, an if statement checking len(word) > 4, and increment the counter when True. The words "elephant"(8), "python"(6), and "laptop"(6) qualify → count is 3.'
+  },
+
+  // ── Q8 MEDIUM/UPPER ───────────────────────────────
+  {
+    id: 8,
+    difficulty: 'medium',
+    topic: 'nested loops',
+    text: 'What is the total value of the variable total after this nested loop finishes?',
+    code: `total = 0\n\n<kw>for</kw> i <kw>in</kw> <fn>range</fn>(1, 4):    <cm># i = 1, 2, 3</cm>\n    <kw>for</kw> j <kw>in</kw> <fn>range</fn>(1, 4):  <cm># j = 1, 2, 3</cm>\n        total = total + 1\n\n<fn>print</fn>(total)`,
+    type: 'mcq',
+    options: ['6', '9', '12', '3'],
+    answer: 1,
+    explanation: 'The outer loop runs 3 times (i = 1, 2, 3). For EACH outer iteration, the inner loop runs 3 times (j = 1, 2, 3). So total += 1 runs 3 × 3 = 9 times. total = 9.'
+  },
+
+  // ── Q9 UPPER INTERMEDIATE ─────────────────────────
+  {
+    id: 9,
+    difficulty: 'hard',
+    topic: 'while + if/else',
+    text: 'Write a program using a while loop that prints all numbers from 1 to 20, but replaces multiples of 3 with "Fizz", multiples of 5 with "Buzz", and multiples of both 3 and 5 with "FizzBuzz".',
+    code: `<cm># Expected output (first few lines):</cm>\n<cm># 1</cm>\n<cm># 2</cm>\n<cm># Fizz</cm>\n<cm># 4</cm>\n<cm># Buzz</cm>\n<cm># Fizz</cm>\n<cm># 7</cm>\n<cm># 8</cm>\n<cm># Fizz</cm>\n<cm># Buzz</cm>\n<cm># 11</cm>\n<cm># Fizz</cm>\n<cm># 13</cm>\n<cm># 14</cm>\n<cm># FizzBuzz</cm>\n<cm># ...</cm>`,
+    type: 'code',
+    keywords: ['while', 'if', 'elif', 'else', 'FizzBuzz', 'Fizz', 'Buzz', 'print'],
+    answer: `num = 1\nwhile num <= 20:\n    if num % 3 == 0 and num % 5 == 0:\n        print("FizzBuzz")\n    elif num % 3 == 0:\n        print("Fizz")\n    elif num % 5 == 0:\n        print("Buzz")\n    else:\n        print(num)\n    num = num + 1`,
+    explanation: 'Key insight: check for FizzBuzz (divisible by BOTH) FIRST. If you check Fizz first, 15 would print "Fizz" instead of "FizzBuzz". The while loop increments num each iteration until it exceeds 20.'
+  },
+
+  // ── Q10 UPPER INTERMEDIATE ────────────────────────
+  {
+    id: 10,
+    difficulty: 'hard',
+    topic: 'for + if/else',
+    text: 'Write code using a for loop that finds the largest number in the list below and prints it. You may NOT use Python\'s built-in max() function. Expected output: 94',
+    code: `nums = [23, 7, 94, 45, 12, 67, 3, 88]`,
+    expected: '94',
+    type: 'code',
+    keywords: ['for', 'if', 'print'],
+    answer: `largest = nums[0]\nfor num in nums:\n    if num > largest:\n        largest = num\nprint(largest)`,
+    explanation: 'Start by assuming the first number is the largest (largest = nums[0]). Loop through every number; if you find one bigger than current largest, update largest. After the loop, print the result.'
+  }
+];
+
+// ── STATE ──────────────────────────────────────────
+let currentQ = 0;
+let answers = new Array(questions.length).fill(null); // null = unanswered/skipped
+let results = new Array(questions.length).fill(null); // true/false/null
+let timerInterval = null;
+let timeLeft = TOTAL_TIME;
+let quizStarted = false;
+let selectedOption = null;
+
+// ── TIMER ──────────────────────────────────────────
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      showResults();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+  const s = (timeLeft % 60).toString().padStart(2, '0');
+  const el = document.getElementById('timer');
+  el.textContent = `${m}:${s}`;
+  el.classList.toggle('urgent', timeLeft <= 300);
+}
+
+// ── START ──────────────────────────────────────────
+function startQuiz() {
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  quizStarted = true;
+  startTimer();
+  renderQuestion(0);
+}
+
+// ── RENDER QUESTION ────────────────────────────────
+function renderQuestion(idx) {
+  const q = questions[idx];
+  selectedOption = null;
+
+  document.getElementById('qNum').textContent = idx + 1;
+  document.getElementById('topicTag').textContent = q.topic;
+
+  const diffBadge = document.getElementById('diffBadge');
+  diffBadge.textContent = q.difficulty.toUpperCase();
+  diffBadge.className = 'difficulty-badge diff-' + (q.difficulty === 'hard' ? 'hard' : q.difficulty);
+
+  document.getElementById('qText').textContent = q.text;
+
+  // Code block
+  const ctx = document.getElementById('contextBox');
+  if (q.code) {
+    ctx.style.display = 'block';
+    ctx.innerHTML = q.code
+      .replace(/\n/g, '<br>')
+      .replace(/    /g, '&nbsp;&nbsp;&nbsp;&nbsp;')
+      .replace(/<kw>(.*?)<\/kw>/g, '<span class="kw">$1</span>')
+      .replace(/<fn>(.*?)<\/fn>/g, '<span class="fn">$1</span>')
+      .replace(/<st>(.*?)<\/st>/g, '<span class="st">$1</span>')
+      .replace(/<cm>(.*?)<\/cm>/g, '<span class="cm">$1</span>')
+      .replace(/<nb>(.*?)<\/nb>/g, '<span class="nb">$1</span>');
+  } else {
+    ctx.style.display = 'none';
+  }
+
+  // Expected output hint
+  const expOut = document.getElementById('expectedOut');
+  if (q.expected) {
+    expOut.style.display = 'block';
+    expOut.innerHTML = `<strong>Expected Output:</strong> <code style="font-family:JetBrains Mono,monospace;color:#c9d1d9">${q.expected.replace(/\n/g, ' → ')}</code>`;
+  } else {
+    expOut.style.display = 'none';
+  }
+
+  // Answer section
+  const sec = document.getElementById('answerSection');
+  if (q.type === 'mcq') {
+    sec.innerHTML = `<label>SELECT THE CORRECT ANSWER</label><div class="options-grid" id="optGrid">${
+      q.options.map((opt, i) =>
+        `<button class="option-btn" onclick="selectOption(${i})" id="opt${i}">${opt.replace(/\n/g, '<br>')}</button>`
+      ).join('')
+    }</div>`;
+  } else if (q.type === 'fill') {
+    sec.innerHTML = `<label>FILL IN THE BLANK</label><input class="fill-answer" id="fillInp" placeholder="${q.placeholder || 'Your answer...'}" onkeydown="if(event.key==='Enter')checkAnswer()">`;
+  } else if (q.type === 'code') {
+    sec.innerHTML = `<label>WRITE YOUR CODE BELOW</label><textarea class="code-answer" id="codeArea" placeholder="# Write your Python code here...">${q.answer ? '' : ''}</textarea>`;
+
+}
+
+// Hide feedback & next
+const fb = document.getElementById(‘feedbackBox’);
+fb.className = ‘feedback-box’;
+fb.innerHTML = ‘’;
+document.getElementById(‘btnNext’).style.display = ‘none’;
+document.getElementById(‘btnCheck’).style.display = ‘inline-block’;
+document.getElementById(‘btnSkip’).style.display = ‘inline-block’;
+
+// Progress
+document.getElementById(‘progressBar’).style.width = `${(idx / questions.length) * 100}%`;
+}
+
+// ── SELECT MCQ OPTION ──────────────────────────────
+function selectOption(i) {
+selectedOption = i;
+document.querySelectorAll(’.option-btn’).forEach((b, idx) => {
+b.classList.toggle(‘selected’, idx === i);
+});
+}
+
+// ── CHECK ANSWER ───────────────────────────────────
+function checkAnswer() {
+const q = questions[currentQ];
+let userAns = null;
+let correct = false;
+
+if (q.type === ‘mcq’) {
+if (selectedOption === null) { alert(‘Please select an answer!’); return; }
+userAns = selectedOption;
+correct = (selectedOption === q.answer);
+// Highlight options
+document.querySelectorAll(’.option-btn’).forEach((b, i) => {
+b.disabled = true;
+if (i === q.answer) b.classList.add(‘correct’);
+else if (i === selectedOption && !correct) b.classList.add(‘wrong’);
+});
+
+} else if (q.type === ‘fill’) {
+const val = document.getElementById(‘fillInp’).value.trim();
+if (!val) { alert(‘Please enter an answer!’); return; }
+userAns = val;
+const accepted = Array.isArray(q.answer) ? q.answer : [q.answer];
+correct = accepted.some(a => a.replace(/\s/g,’’) === val.replace(/\s/g,’’));
+document.getElementById(‘fillInp’).disabled = true;
+document.getElementById(‘fillInp’).style.borderColor = correct ? ‘var(–accent)’ : ‘var(–warn)’;
+
+} else if (q.type === ‘code’) {
+const code = document.getElementById(‘codeArea’).value.trim();
+if (!code) { alert(‘Please write some code!’); return; }
+userAns = code;
+// Keyword-based checking
+const lc = code.toLowerCase();
+correct = q.keywords.every(kw => lc.includes(kw.toLowerCase()));
+document.getElementById(‘codeArea’).disabled = true;
+document.getElementById(‘codeArea’).style.borderColor = correct ? ‘var(–accent)’ : ‘var(–warn)’;
+}
+
+answers[currentQ] = userAns;
+results[currentQ] = correct;
+
+// Show feedback
+const fb = document.getElementById(‘feedbackBox’);
+fb.className = ’feedback-box show ’ + (correct ? ‘correct-fb’ : ‘wrong-fb’);
+fb.innerHTML = `<strong>${correct ? '✓ Correct!' : '✗ Not quite.'}</strong> <div class="explanation">${q.explanation}${ !correct && q.type !== 'code' ?`<br><br>Correct answer: <code>${
+q.type === ‘mcq’ ? q.options[q.answer] : (Array.isArray(q.answer) ? q.answer[0] : q.answer)
+}</code>`: '' }${ !correct && q.type === 'code' ?`<br><br>Reference solution:<br><code style="display:block;margin-top:6px;white-space:pre">${q.answer}</code>` : '' }</div>`;
+
+document.getElementById(‘btnCheck’).style.display = ‘none’;
+document.getElementById(‘btnSkip’).style.display = ‘none’;
+document.getElementById(‘btnNext’).style.display = ‘inline-block’;
+document.getElementById(‘btnNext’).textContent = currentQ < questions.length - 1 ? ‘Next Question →’ : ‘See Results →’;
+}
+
+// ── SKIP ───────────────────────────────────────────
+function skipQuestion() {
+answers[currentQ] = null;
+results[currentQ] = null;
+nextQuestion();
+}
+
+// ── NEXT ───────────────────────────────────────────
+function nextQuestion() {
+if (currentQ < questions.length - 1) {
+currentQ++;
+renderQuestion(currentQ);
+} else {
+showResults();
+}
+}
+
+// ── RESULTS ────────────────────────────────────────
+function showResults() {
+clearInterval(timerInterval);
+document.getElementById(‘quizScreen’).style.display = ‘none’;
+document.getElementById(‘resultsScreen’).style.display = ‘block’;
+document.getElementById(‘progressBar’).style.width = ‘100%’;
+
+const correct = results.filter(r => r === true).length;
+const wrong = results.filter(r => r === false).length;
+const skipped = results.filter(r => r === null).length;
+const pct = Math.round((correct / questions.length) * 100);
+
+document.getElementById(‘rbCorrect’).textContent = correct;
+document.getElementById(‘rbWrong’).textContent = wrong;
+document.getElementById(‘rbSkip’).textContent = skipped;
+document.getElementById(‘scorePct’).textContent = pct + ‘%’;
+document.getElementById(‘scoreCircle’).style.setProperty(’–pct’, pct + ‘%’);
+
+const titles = [‘Keep Practicing!’, ‘Good Effort!’, ‘Well Done!’, ‘Excellent Work!’, ‘Outstanding!’];
+const subs = [
+‘Review the explanations and try again — every expert was once a beginner.’,
+‘You're getting there! Focus on the questions you missed.’,
+‘Solid understanding of Python fundamentals!’,
+‘You have a strong grasp of Python control structures!’,
+‘Perfect score! You've mastered Python fundamentals!’
+];
+const tier = pct >= 90 ? 4 : pct >= 75 ? 3 : pct >= 60 ? 2 : pct >= 40 ? 1 : 0;
+document.getElementById(‘resultTitle’).textContent = titles[tier];
+document.getElementById(‘resultSub’).textContent = subs[tier];
+
+// Review list
+const rl = document.getElementById(‘reviewList’);
+rl.innerHTML = questions.map((q, i) => {
+const cls = results[i] === true ? ‘r-correct’ : results[i] === false ? ‘r-wrong’ : ‘r-skip’;
+const icon = results[i] === true ? ‘✓’ : results[i] === false ? ‘✗’ : ‘—’;
+return `<div class="review-item ${cls}"> <div class="review-q">${icon} Q${i+1}: ${q.text.substring(0,80)}${q.text.length > 80 ? '...' : ''}</div> <div class="review-ans">${ results[i] === null ? '<span style="color:var(--muted)">Skipped</span>' : results[i] === true ? '<span style="color:var(--accent)">Correct ✓</span>' : `<span class="your-ans">Incorrect</span> — <span class="right-ans">Review explanation above</span>` }</div> </div>`;
+}).join(’’);
+}
+
+// ── RESTART ────────────────────────────────────────
+function restartQuiz() {
+currentQ = 0;
+answers = new Array(questions.length).fill(null);
+results = new Array(questions.length).fill(null);
+timeLeft = TOTAL_TIME;
+selectedOption = null;
+clearInterval(timerInterval);
+document.getElementById(‘resultsScreen’).style.display = ‘none’;
+document.getElementById(‘quizScreen’).style.display = ‘block’;
+document.getElementById(‘timer’).classList.remove(‘urgent’);
+updateTimerDisplay();
+startTimer();
+renderQuestion(0);
+}
+</script>
+
+</body>
+</html>
